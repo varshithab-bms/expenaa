@@ -14,7 +14,8 @@ import { getToken, authenticate, register, logout as apiLogout } from "./utils/a
 import { getExpenses, addExpense, deleteExpense } from "./utils/expenses";
 
 // Import icons from react-icons
-import { MdDashboard } from "react-icons/md";
+import { MdHome } from "react-icons/md";
+
 import { FaChartBar, FaBullseye, FaUserCircle } from "react-icons/fa";
 
 const EMAIL_KEY = "user_email";
