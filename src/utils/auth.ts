@@ -1,4 +1,4 @@
-const API_BASE = "http://192.168.43.111:5000/api/auth";
+const API_BASE = "http://192.168.227.111:5000/api/auth"
 const TOKEN_KEY = "auth_token";
 
 // Save token
@@ -16,8 +16,10 @@ export async function logout(): Promise<void> {
   localStorage.removeItem(TOKEN_KEY);
 }
 
-// Register user via backend
-export async function register(email: string, password: string): Promise<{ ok: boolean; error?: string }> {
+export async function register(
+  email: string,
+  password: string
+): Promise<{ token?: string; error?: string }> {
   try {
     const res = await fetch(`${API_BASE}/signup`, {
       method: "POST",
@@ -27,17 +29,27 @@ export async function register(email: string, password: string): Promise<{ ok: b
 
     const data = await res.json();
 
-    if (!res.ok) return { ok: false, error: data.error || "Signup failed" };
+    console.log("Signup response status:", res.status);
+    console.log("Signup response JSON:", data);
+
+    if (!res.ok || !data.token) {
+      return {
+        token: undefined,
+        error: data?.error || "Signup failed",
+      };
+    }
 
     saveToken(data.token);
-    return { ok: true };
-  } catch {
-    return { ok: false, error: "Network error during signup" };
+    return { token: data.token }; // ✅ Return token here
+  } catch (err) {
+    console.error("Network error during signup:", err);
+    return { token: undefined, error: "Network error during signup" };
   }
 }
 
+
 // Login user via backend
-export async function authenticate(email: string, password: string): Promise<{ ok: boolean; error?: string }> {
+export async function authenticate(email: string, password: string): Promise<{ ok: boolean; token?: string; error?: string }> {
   try {
     const res = await fetch(`${API_BASE}/login`, {
       method: "POST",
@@ -45,13 +57,23 @@ export async function authenticate(email: string, password: string): Promise<{ o
       body: JSON.stringify({ email, password }),
     });
 
+    console.log("Response status:", res.status);
+
     const data = await res.json();
+    console.log("Response JSON:", data);
 
-    if (!res.ok) return { ok: false, error: data.error || "Login failed" };
+    if (!res.ok) {
+      return { ok: false, error: data.error || "Login failed" };
+    }
 
-    saveToken(data.token);
-    return { ok: true };
-  } catch {
+    if (!data.token) {
+      return { ok: false, error: "No token received from server." };
+    }
+
+    saveToken(data.token); // if you still want to save it here
+    return { ok: true, token: data.token };  // <-- Return token here
+  } catch (error) {
+    console.error("Network error during login:", error);
     return { ok: false, error: "Network error during login" };
   }
 }

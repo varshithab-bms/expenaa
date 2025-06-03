@@ -2,17 +2,17 @@ export interface User {
   email: string;
   password: string;
 }
+
 export interface Expense {
-  id: string;
+  id: string;         // mapped from _id
+  userId: string;     // backend userId field
+  title: string;
   category: string;
   amount: number;
   date: string;
-  title: string;
-  userEmail?: string; // Only present in backend response
 }
 
-export type NewExpense = Omit<Expense, "id" | "userEmail">;
-
+export type NewExpense = Omit<Expense, "id" | "userId">;
 
 export interface Profile {
   id?: string;       // Optional if backend sends an id
@@ -21,3 +21,9 @@ export interface Profile {
   bio: string;
   photo: string;
 }
+
+export type AuthResult = {
+  ok: boolean;
+  token?: string;
+  error?: string;
+};

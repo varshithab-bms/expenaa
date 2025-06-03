@@ -2,31 +2,57 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 require('dotenv').config();
 
-const generateToken = (user) =>
-  jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-
+// Generate JWT Token
+const generateToken = (user) => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET is not defined in environment variables');
+  }
+  return jwt.sign({ id: user._id }, secret, { expiresIn: '7d' });
+};
+// Signup Controller
 exports.signup = async (req, res) => {
   const { email, password } = req.body;
+
   try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email already exists' });
+    }
+
     const user = new User({ email, password });
     await user.save();
-    res.status(201).json({ token: generateToken(user) });
+
+    const token = generateToken(user);
+    return res.status(201).json({ token });
   } catch (error) {
     console.error('Signup error:', error);
-    res.status(400).json({ error: 'Signup failed' });
+    return res.status(500).json({ error: 'Signup failed' });
   }
 };
 
+// Login Controller
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+  console.log('Login attempt for email:', email);
+
   try {
     const user = await User.findOne({ email });
-    if (!user || !(await user.comparePassword(password))) {
+    if (!user) {
+      console.log('No user found with email:', email);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-    res.json({ token: generateToken(user) });
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      console.log('Password mismatch for email:', email);
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const token = generateToken(user);
+    return res.json({ token });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(400).json({ error: 'Login failed' });
+    console.error('Error during login:', error);
+    return res.status(500).json({ error: 'Login failed' });
   }
 };

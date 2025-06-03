@@ -2,102 +2,112 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
 import Budget from "./component/Budget";
 import AddExpense from "./component/AddExpense";
-import ExpensesList from "./component/ExpenseList";
+import ExpenseList from "./component/ExpenseList";
 import Login from "./component/Login";
 import Homepage from "./component/Homepage";
 import Analytics from "./component/Analytics";
 import GoalTracker from "./component/GoalTracker";
 import ProfilePage from "./component/ProfilePage";
-import { Expense, NewExpense } from "./types";
+import { Expense,AuthResult, NewExpense } from "./types";
 import { Profile } from "./types"; // Adjust path if needed
-import { authenticate, register, logout as apiLogout } from "./utils/auth";
-import { getExpenses, addExpense as apiAddExpense, deleteExpense as apiDeleteExpense } from "./utils/expenses";
+import { getToken, authenticate, register, logout as apiLogout } from "./utils/auth";
+import { getExpenses, addExpense, deleteExpense } from "./utils/expenses";
 
 // Import icons from react-icons
 import { MdDashboard } from "react-icons/md";
 import { FaChartBar, FaBullseye, FaUserCircle } from "react-icons/fa";
 
 const EMAIL_KEY = "user_email";
+const TOKEN_KEY = "auth_token";
 
 const App: React.FC = () => {
   const [userProfile, setUserProfile] = useState<Profile | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [showHomepage, setShowHomepage] = useState<boolean>(true);
 
-  // On mount, check localStorage for user email
+  // Load email and token on mount, then fetch expenses if token found
   useEffect(() => {
     const email = localStorage.getItem(EMAIL_KEY);
-    if (email) {
-      setUserEmail(email);
-      setShowHomepage(false);
-      fetchExpenses();
-    }
-    // eslint-disable-next-line
-  }, []);
+    const storedToken = getToken();
 
-  // Fetch expenses from backend
-  const fetchExpenses = async (): Promise<void> => {
+    if (email && storedToken) {
+      setUserEmail(email);
+      setToken(storedToken);
+      setShowHomepage(false);
+
+      // Fetch expenses only after setting token state
+      fetchExpenses(storedToken);
+    }
+  }, []); // Run once on mount
+
+  // Fetch expenses from backend using token
+  const fetchExpenses = async (authToken: string): Promise<void> => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getExpenses();
+      const data = await getExpenses(authToken);
       setExpenses(data);
     } catch (err) {
-      if (err && typeof err === "object" && "message" in err) {
-        setError((err as Error).message || "Failed to load expenses");
-      } else {
-        setError("Failed to load expenses");
-      }
+      setError(err instanceof Error ? err.message : "Failed to load expenses");
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle login/signup with improved error handling
+  // Handle login/signup
   const handleLogin = async (
-    email: string,
-    password: string,
-    isSignup: boolean
-  ): Promise<{ success: boolean; error?: string }> => {
-    try {
-      let result;
-      if (isSignup) {
-        result = await register(email, password); // { ok: boolean, error?: string }
-        if (!result.ok) return { success: false, error: result.error || "Signup failed." };
-      } else {
-        result = await authenticate(email, password); // { ok: boolean, error?: string }
-        if (!result.ok) return { success: false, error: result.error || "Login failed." };
-      }
-      // Save email in localStorage and state
-      localStorage.setItem(EMAIL_KEY, email);
-      setUserEmail(email);
-      setShowHomepage(false);
-      await fetchExpenses();
-      return { success: true };
-    } catch (err) {
-      if (err && typeof err === "object" && "message" in err) {
-        return { success: false, error: (err as Error).message };
-      }
-      return { success: false, error: isSignup ? "Signup failed." : "Login failed." };
+  email: string,
+  password: string,
+  isSignup: boolean
+): Promise<{ success: boolean; error?: string }> => {
+  try {
+    const result = isSignup
+      ? await register(email, password)
+      : await authenticate(email, password);
+    console.log("Auth result:", result);
+    
+    if (!result.token) {
+      return {
+        success: false,
+        error: result.error ?? "Authentication failed",
+      };
     }
-  };
+
+    localStorage.setItem(EMAIL_KEY, email);
+    localStorage.setItem(TOKEN_KEY, result.token);
+
+    setUserEmail(email);
+    setToken(result.token);
+    setShowHomepage(false);
+
+    await fetchExpenses(result.token);
+
+    return { success: true };
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Unknown error",
+    };
+  }
+};
 
   // Add expense via backend
   const handleAddExpense = async (expense: NewExpense): Promise<void> => {
+    if (!token) {
+      setError("User not authenticated");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
-      await apiAddExpense(expense);
-      await fetchExpenses(); // Always fetch fresh data
+      await addExpense(token, expense);
+      await fetchExpenses(token);
     } catch (err) {
-      if (err && typeof err === "object" && "message" in err) {
-        setError((err as Error).message || "Failed to add expense");
-      } else {
-        setError("Failed to add expense");
-      }
+      setError(err instanceof Error ? err.message : "Failed to add expense");
     } finally {
       setLoading(false);
     }
@@ -105,17 +115,17 @@ const App: React.FC = () => {
 
   // Delete expense via backend
   const handleDeleteExpense = async (id: string): Promise<void> => {
+    if (!token) {
+      setError("User not authenticated");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
-      await apiDeleteExpense(id);
-      await fetchExpenses(); // Always fetch fresh data
+      await deleteExpense(token, id);
+      await fetchExpenses(token);
     } catch (err) {
-      if (err && typeof err === "object" && "message" in err) {
-        setError((err as Error).message || "Failed to delete expense");
-      } else {
-        setError("Failed to delete expense");
-      }
+      setError(err instanceof Error ? err.message : "Failed to delete expense");
     } finally {
       setLoading(false);
     }
@@ -125,22 +135,25 @@ const App: React.FC = () => {
   const handleLogout = async (): Promise<void> => {
     await apiLogout();
     localStorage.removeItem(EMAIL_KEY);
+    localStorage.removeItem(TOKEN_KEY);
     setUserEmail(null);
+    setToken(null);
     setExpenses([]);
     setShowHomepage(true);
   };
 
-  // Homepage splash
+  // Show homepage splash before login
   if (showHomepage) {
     return <Homepage onContinue={() => setShowHomepage(false)} />;
   }
+  
 
-  // Login page
-  if (!userEmail) {
+  // Show login if no email or token
+  if (!userEmail || !token) {
     return <Login onLogin={handleLogin} />;
   }
 
-  // Main app
+  // Main app UI with navigation and routes
   return (
     <Router>
       <div style={{ maxWidth: 800, margin: "0 auto", padding: 24 }}>
@@ -235,16 +248,13 @@ const App: React.FC = () => {
               <>
                 <Budget expenses={expenses} loading={loading} />
                 <AddExpense addExpense={handleAddExpense} />
-                <ExpensesList expenses={expenses} deleteExpense={handleDeleteExpense} />
+                <ExpenseList expenses={expenses} deleteExpense={handleDeleteExpense} />
               </>
             }
           />
           <Route path="/analytics" element={<Analytics expenses={expenses} />} />
-          <Route path="/goal" element={<GoalTracker expenses={expenses} userEmail={userEmail!} />} />
-          <Route
-            path="/profile"
-            element={<ProfilePage userEmail={userEmail!} onLogout={handleLogout} />}
-          />
+          <Route path="/goal" element={<GoalTracker expenses={expenses} userEmail={userEmail} />} />
+          <Route path="/profile" element={<ProfilePage userEmail={userEmail} onLogout={handleLogout} />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>

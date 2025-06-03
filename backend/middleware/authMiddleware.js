@@ -1,29 +1,17 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
-module.exports = (req, res, next) => {
-  // Get authorization header value
-  const authHeader = req.headers.authorization;
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
-  // Check if the header is present and properly formatted
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Unauthorized: No token provided' });
-  }
+  if (!token) return res.status(401).json({ error: 'No token provided' });
 
-  // Extract token from "Bearer <token>"
-  const token = authHeader.split(' ')[1];
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ error: 'Invalid token' });
 
-  try {
-    // Verify the token using your secret key
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Attach decoded user info (like user id and email) to the request object
-    req.user = decoded;
-
-    // Continue to next middleware/route handler
+    req.user = user; // now req.user.id is available
     next();
-  } catch (err) {
-    // Token verification failed (expired, invalid, etc.)
-    res.status(401).json({ error: 'Unauthorized: Invalid token' });
-  }
+  });
 };
+
+module.exports = authMiddleware;

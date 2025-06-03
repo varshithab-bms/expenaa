@@ -1,8 +1,6 @@
 // Inside backend/controllers/profileController.js
 const Profile = require('../models/Profile');
 
-
-
 exports.getOwnProfile = async (req, res) => {
   try {
     const profile = await Profile.findOne({ userId: req.user.id });
