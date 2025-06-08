@@ -1,5 +1,6 @@
 import { Expense, NewExpense } from "../types";
-const API_BASE = "http://localhost:5000/api/expenses";
+const API_BASE = "https://expenzaa.onrender.com/api/expenses";
+
 
 
 async function parseJSONSafe(res: Response) {

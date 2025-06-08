@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5000/api/auth";
+const API_BASE = "https://expenzaa.onrender.com/api/auth";
 const TOKEN_KEY = "auth_token";
 
 // Save token
