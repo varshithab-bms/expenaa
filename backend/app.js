@@ -9,9 +9,6 @@ const app = express();
 // ✅ Required to parse JSON request bodies
 app.use(express.json());
 
-// ✅ CORS must be enabled
-app.use(cors());
-
 console.log('JWT_SECRET:', process.env.JWT_SECRET);
 
 // Optional: log every request
@@ -20,7 +17,10 @@ app.use((req, res, next) => {
   next();
 });
 app.use(cors({
-  origin: 'http://192.168.227.111:5173',
+  origin: [
+    'https://expenza-625xd29vo-varshitha-bs-projects.vercel.app/',      // your local frontend dev URL
+    'https://expenza-git-main-varshitha-bs-projects.vercel.app/'  // your deployed frontend URL
+  ],
   credentials: true,
 }));
 

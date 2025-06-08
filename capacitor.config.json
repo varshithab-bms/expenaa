@@ -1,5 +1,10 @@
+
 {
   "appId": "com.example.app",
   "appName": "expenza2",
-  "webDir": "dist"
+  "webDir": "dist",
+  "server": {
+    "url": "http://192.168.43.111:5173",
+    "cleartext": true
+  }
 }
