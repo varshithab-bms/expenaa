@@ -11,12 +11,9 @@ async function startServer() {
       useUnifiedTopology: true,
     });
     console.log('✅ MongoDB connected');
-    const app = require('./app'); // ← app.js exports express app
-
-app.listen(PORT, () => {
-  console.log(`🚀 Server running at port ${PORT}`);
-});
-
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server running at   https://expenzaa.onrender.com`);
+    });
   } catch (err) {
     console.error('❌ MongoDB connection error:', err);
   }

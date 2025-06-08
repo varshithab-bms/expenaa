@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
-const profileRoutes = require('./routes/profileRoutes');
 const app = express();
 
 // ✅ Required to parse JSON request bodies
@@ -42,7 +41,6 @@ app.options('*', cors(corsOptions)); // Allow preflight
 // ✅ API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/expenses', expenseRoutes);
-app.use('/api/profile', profileRoutes);
 
 // Test routes
 app.get('/', (req, res) => {
