@@ -13,21 +13,31 @@ console.log('JWT_SECRET:', process.env.JWT_SECRET);
 
 // Optional: log every request
 app.use((req, res, next) => {
-  console.log(`Incoming ${req.method} request to ${req.url}`);
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+
   next();
 });
-app.use(cors({
+
+const corsOptions = {
   origin: [
+    'http://localhost:5173',
     'http://192.168.43.111:5173',
     'https://expenza-omega.vercel.app',
     'https://expenza-git-main-varshitha-bs-projects.vercel.app',
-      'https://expenza.loca.lt',
     'https://expenza-o43mucqug-varshitha-bs-projects.vercel.app'
-
   ],
   credentials: true,
-}));
+};
 
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Allow preflight
 
 // ✅ API routes
 app.use('/api/auth', authRoutes);
