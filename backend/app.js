@@ -18,11 +18,16 @@ app.use((req, res, next) => {
 });
 app.use(cors({
   origin: [
-    'https://expenza-625xd29vo-varshitha-bs-projects.vercel.app/',      // your local frontend dev URL
-    'https://expenza-git-main-varshitha-bs-projects.vercel.app/'  // your deployed frontend URL
+    'http://192.168.43.111:5173',
+    'https://expenza-omega.vercel.app',
+    'https://expenza-git-main-varshitha-bs-projects.vercel.app',
+      'https://expenza.loca.lt',
+    'https://expenza-o43mucqug-varshitha-bs-projects.vercel.app'
+
   ],
   credentials: true,
 }));
+
 
 // ✅ API routes
 app.use('/api/auth', authRoutes);

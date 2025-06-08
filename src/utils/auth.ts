@@ -1,4 +1,4 @@
-const API_BASE = "https://thin-ears-fix.loca.lt/api/auth"
+const API_BASE = "https://expenza.loca.lt/api/auth"
 const TOKEN_KEY = "auth_token";
 
 // Save token

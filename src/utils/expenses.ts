@@ -1,5 +1,5 @@
 import { Expense, NewExpense } from "../types";
-const API_BASE = "https://thin-ears-fix.loca.lt/api/expenses"
+const API_BASE = "https://expenza.loca.lt/api/expenses"
 
 async function parseJSONSafe(res: Response) {
   const text = await res.text();
