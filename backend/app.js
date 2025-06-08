@@ -26,6 +26,7 @@ app.use((req, res, next) => {
 
 const corsOptions = {
   origin: [
+    'https://expenza-ectt.vercel.app/',
     'http://localhost:5173',
     'http://192.168.43.111:5173',
     'https://expenza-omega.vercel.app',
