@@ -17,7 +17,7 @@ import Analytics from "./component/Analytics";
 import GoalTracker from "./component/GoalTracker";
 import ProfilePage from "./component/ProfilePage";
 
-import { Expense, NewExpense, Profile } from "./types";
+import { Expense, NewExpense } from "./types";
 import {
   getToken,
   authenticate,
@@ -32,7 +32,7 @@ import { FaChartBar, FaBullseye, FaUserCircle, FaBars } from "react-icons/fa";
 const EMAIL_KEY = "user_email";
 const TOKEN_KEY = "auth_token";
 
-// Custom hook to get current location pathname for active link styling
+// Custom hook for current pathname (for active link styling)
 function usePathname() {
   const location = useLocation();
   return location.pathname;
@@ -50,9 +50,8 @@ const AppContent: React.FC<{
 
   const pathname = usePathname();
 
-  // Fetch expenses on mount
   useEffect(() => {
-    async function fetchData() {
+    async function fetchExpenses() {
       setLoading(true);
       setError(null);
       try {
@@ -64,10 +63,9 @@ const AppContent: React.FC<{
         setLoading(false);
       }
     }
-    fetchData();
+    fetchExpenses();
   }, [token]);
 
-  // Add expense handler
   const handleAddExpense = async (expense: NewExpense) => {
     setLoading(true);
     setError(null);
@@ -82,7 +80,6 @@ const AppContent: React.FC<{
     }
   };
 
-  // Delete expense handler
   const handleDeleteExpense = async (id: string) => {
     setLoading(true);
     setError(null);
@@ -97,79 +94,87 @@ const AppContent: React.FC<{
     }
   };
 
-  // Close sidebar when clicking a nav link (mobile UX)
   const handleNavClick = () => {
-    if (window.innerWidth <= 768) {
-      setSidebarOpen(false);
-    }
+    if (window.innerWidth <= 768) setSidebarOpen(false);
   };
 
   return (
     <div className="app-wrapper">
       {/* Sidebar */}
-      <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
+      <aside className={`sidebar${sidebarOpen ? " open" : ""}`} aria-label="Sidebar Navigation">
         <div className="sidebar-header">
-          <FaUserCircle size={72} color="#6c63ff" />
-          <h2>{userEmail}</h2>
-          <button className="logout-btn" onClick={onLogout}>
+          <FaUserCircle size={72} color="var(--primary-color)" aria-hidden="true" />
+          <h2 className="sidebar-email" tabIndex={0}>{userEmail}</h2>
+          <button
+            className="logout-btn button"
+            onClick={onLogout}
+            aria-label="Logout"
+            type="button"
+          >
             Logout
           </button>
         </div>
-
-        {/* Nav Links */}
-        <nav className="sidebar-nav">
+        <nav className="sidebar-nav" aria-label="Main Navigation">
           <Link
             to="/"
             onClick={handleNavClick}
             className={pathname === "/" ? "active" : ""}
+            aria-current={pathname === "/" ? "page" : undefined}
+            title="Dashboard"
           >
-            <MdDashboard size={24} />
-
+            <MdDashboard aria-hidden="true" />
+            <span>Dashboard</span>
           </Link>
           <Link
             to="/analytics"
             onClick={handleNavClick}
             className={pathname === "/analytics" ? "active" : ""}
+            aria-current={pathname === "/analytics" ? "page" : undefined}
+            title="Analytics"
           >
-            <FaChartBar size={24} />
+            <FaChartBar aria-hidden="true" />
+            <span>Analytics</span>
           </Link>
           <Link
             to="/goal"
             onClick={handleNavClick}
             className={pathname === "/goal" ? "active" : ""}
+            aria-current={pathname === "/goal" ? "page" : undefined}
+            title="Goal Tracker"
           >
-            <FaBullseye size={24} />
+            <FaBullseye aria-hidden="true" />
+            <span>Goal Tracker</span>
           </Link>
           <Link
             to="/profile"
             onClick={handleNavClick}
             className={pathname === "/profile" ? "active" : ""}
+            aria-current={pathname === "/profile" ? "page" : undefined}
+            title="Profile"
           >
-            <FaUserCircle size={24} />
+            <FaUserCircle aria-hidden="true" />
             <span>Profile</span>
           </Link>
         </nav>
       </aside>
-
       {/* Main Content */}
-      <div className="main-content">
-        <header>
-          {/* Hamburger for mobile */}
+      <main className="main-content" role="main">
+        <header className="main-header">
           <button
-            className="sidebar-toggle"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            aria-label="Toggle sidebar"
+            className="sidebar-toggle button"
+            onClick={() => setSidebarOpen((open) => !open)}
+            aria-label="Toggle sidebar navigation"
+            aria-expanded={sidebarOpen}
+            type="button"
           >
-            <FaBars size={28} />
+            <FaBars aria-hidden="true" />
           </button>
-          <h1>Expenza - Personalized Expense Tracker</h1>
+          <h1>
+            Expenza <span className="subtitle">Personalized Expense Tracker</span>
+          </h1>
         </header>
-
-        {/* Loading & Error */}
-        {loading && <div className="loading-text">Loading...</div>}
-        {error && <div className="error-text">{error}</div>}
-
-        {/* Routes */}
+        {loading && <div className="loading-text" role="status" aria-live="polite">Loading...</div>}
+        {error && <div className="error-text" role="alert">{error}</div>}
         <Routes>
           <Route
             path="/"
@@ -177,19 +182,25 @@ const AppContent: React.FC<{
               <>
                 <Budget expenses={expenses} loading={loading} />
                 <AddExpense addExpense={handleAddExpense} />
-                <ExpenseList expenses={expenses} deleteExpense={handleDeleteExpense} />
+                <ExpenseList
+                  expenses={expenses}
+                  deleteExpense={handleDeleteExpense}
+                />
               </>
             }
           />
           <Route path="/analytics" element={<Analytics expenses={expenses} />} />
-          <Route path="/goal" element={<GoalTracker expenses={expenses} userEmail={userEmail} />} />
+          <Route
+            path="/goal"
+            element={<GoalTracker expenses={expenses} userEmail={userEmail} />}
+          />
           <Route
             path="/profile"
             element={<ProfilePage userEmail={userEmail} onLogout={onLogout} />}
           />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </div>
+      </main>
     </div>
   );
 };
@@ -210,7 +221,6 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // Handle login/signup
   const handleLogin = async (
     email: string,
     password: string,
@@ -222,10 +232,7 @@ const App: React.FC = () => {
         : await authenticate(email, password);
 
       if (!result.token) {
-        return {
-          success: false,
-          error: result.error ?? "Authentication failed",
-        };
+        return { success: false, error: result.error ?? "Authentication failed" };
       }
 
       localStorage.setItem(EMAIL_KEY, email);
@@ -244,7 +251,6 @@ const App: React.FC = () => {
     }
   };
 
-  // Logout
   const handleLogout = async () => {
     await apiLogout();
     localStorage.removeItem(EMAIL_KEY);
@@ -262,7 +268,6 @@ const App: React.FC = () => {
     return <Login onLogin={handleLogin} />;
   }
 
-  // Wrap inside Router and render main app content
   return (
     <Router>
       <AppContent userEmail={userEmail} token={token} onLogout={handleLogout} />
