@@ -81,10 +81,10 @@ const GoalTracker: React.FC<GoalTrackerProps> = ({
   return (
     <div
       style={{
-        margin: "2.5rem 0",
+        margin: "1.5rem 0",
         textAlign: "center",
         background: "linear-gradient(120deg, #f0f4ff 0%, #ffe8f7 100%)",
-        borderRadius: "1.5rem",
+        borderRadius: "1rem",
         boxShadow: "0 8px 32px rgba(255, 105, 180, 0.10)",
         padding: "2.5rem 1.5rem",
         maxWidth: 480,
@@ -95,7 +95,7 @@ const GoalTracker: React.FC<GoalTrackerProps> = ({
     >
       <h3
         style={{
-          fontSize: "2rem",
+          fontSize: "1rem",
           color: "#6C63FF",
           fontWeight: 900,
           letterSpacing: "1px",
@@ -111,7 +111,7 @@ const GoalTracker: React.FC<GoalTrackerProps> = ({
         </p>
       ) : goal === 0 ? (
         <div>
-          <p style={{ color: "#b347a8", fontWeight: 700, fontSize: "1.1rem" }}>
+          <p style={{ color: "#b347a8", fontWeight: 700, fontSize: "1rem" }}>
             No goal yet. Manifest your budget vibes below:
           </p>
           <input
@@ -123,7 +123,7 @@ const GoalTracker: React.FC<GoalTrackerProps> = ({
               padding: "0.7rem 1rem",
               borderRadius: "12px",
               border: "2px solid #6C63FF",
-              fontSize: "1.1rem",
+              fontSize: "0.8rem",
               marginRight: "0.5rem",
               outline: "none",
               marginBottom: "1rem",

@@ -12,12 +12,11 @@ async function startServer() {
     });
     console.log('✅ MongoDB connected');
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+  console.log(`Server listening on port http://192.168.43.111:5173`);
 });
 
   } catch (err) {
     console.error('❌ MongoDB connection error:', err);
   }
 }
-
 startServer();

@@ -127,7 +127,7 @@ const ProfilePage: React.FC<ProfileProps> = ({ userEmail, onLogout }) => {
       <h2
         style={{
           fontWeight: 900,
-          fontSize: "2.2rem",
+          fontSize: "1.3rem",
           marginBottom: "0.8rem",
           letterSpacing: "1.5px",
         }}
@@ -139,7 +139,7 @@ const ProfilePage: React.FC<ProfileProps> = ({ userEmail, onLogout }) => {
       {goalFulfilled && (
         <div
           style={{
-            fontSize: "2.5rem",
+            fontSize: "1.5rem",
             marginBottom: "1.2rem",
             color: "#ffc658",
             textShadow: "0 2px 10px #ffc65888",
@@ -257,7 +257,7 @@ const ProfilePage: React.FC<ProfileProps> = ({ userEmail, onLogout }) => {
             disabled={saving}
             style={{
               width: "90%",
-              padding: "0.7rem",
+              padding: "0.5rem",
               borderRadius: "10px",
               border: "2px solid #ffc658",
               fontSize: "1.05rem",

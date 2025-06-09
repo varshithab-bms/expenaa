@@ -52,7 +52,7 @@ const buttonStyle: React.CSSProperties = {
   border: "none",
   padding: "13px 30px",
   borderRadius: "50px",
-  fontSize: "1.1rem",
+  fontSize: "0.8rem",
   fontWeight: 700,
   cursor: "pointer",
   boxShadow: "0 2px 12px rgba(108, 99, 255, 0.14)",
@@ -64,7 +64,7 @@ const helperStyle: React.CSSProperties = {
   textAlign: "center",
   color: "#8884d8",
   marginTop: "0.5rem",
-  fontSize: "0.98rem",
+  fontSize: "0.9rem",
   fontStyle: "italic"
 };
 

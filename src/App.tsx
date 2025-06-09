@@ -7,7 +7,7 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-
+import './App.css'; // Or your CSS file name
 import Budget from "./component/Budget";
 import AddExpense from "./component/AddExpense";
 import ExpenseList from "./component/ExpenseList";
@@ -103,7 +103,6 @@ const AppContent: React.FC<{
       {/* Sidebar */}
       <aside className={`sidebar${sidebarOpen ? " open" : ""}`} aria-label="Sidebar Navigation">
         <div className="sidebar-header">
-          <FaUserCircle size={72} color="var(--primary-color)" aria-hidden="true" />
           <h2 className="sidebar-email" tabIndex={0}>{userEmail}</h2>
           <button
             className="logout-btn button"
@@ -169,9 +168,11 @@ const AppContent: React.FC<{
           >
             <FaBars aria-hidden="true" />
           </button>
-          <h1>
-            Expenza <span className="subtitle">Personalized Expense Tracker</span>
-          </h1>
+         <h1 style={{ fontSize: '28px' }}>
+               Expenza <span className="subtitle" style={{ fontSize: '22px' }}>
+                                  Personalized Expense Tracker
+          </span>
+        </h1>
         </header>
         {loading && <div className="loading-text" role="status" aria-live="polite">Loading...</div>}
         {error && <div className="error-text" role="alert">{error}</div>}

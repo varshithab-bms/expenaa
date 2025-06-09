@@ -63,8 +63,8 @@ const Analytics: React.FC<AnalyticsProps> = ({ expenses }) => {
         style={{
           textAlign: "center",
           fontWeight: "900",
-          fontSize: "3rem",
-          marginBottom: "1.5rem",
+          fontSize: "1rem",
+          marginBottom: "1rem",
           textShadow: "2px 2px 6px #ffb6c1",
         }}
       >
@@ -77,10 +77,10 @@ const Analytics: React.FC<AnalyticsProps> = ({ expenses }) => {
         </div>
       ) : (
         <>
-          <section style={{ marginBottom: "3rem" }}>
+          <section style={{ marginBottom: "1.5rem" }}>
             <h3
               style={{
-                fontSize: "2rem",
+                fontSize: "1rem",
                 color: "#ff69b4",
                 marginBottom: "1rem",
                 borderBottom: "3px dashed #ff69b4",
@@ -89,7 +89,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ expenses }) => {
             >
               Daily Spending 💸
             </h3>
-            <ResponsiveContainer width="100%" height={350}>
+            <ResponsiveContainer width="100%" height={150}>
               <LineChart data={lineData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <XAxis
                   dataKey="date"
@@ -147,7 +147,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ expenses }) => {
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  outerRadius={130}
+                  outerRadius={80}
                   label={({ name, percent, x, y, textAnchor }) => (
                     <text
                       x={x}

@@ -1,6 +1,6 @@
 import { Profile } from "../types";
 
-const API_BASE = "http://localhost:5000/api/profiles/me"; // current user's profile endpoint
+const API_BASE = "http://192.168.43.111:5000/api/profiles/me"; // current user's profile endpoint
 const TOKEN_KEY = "auth_token";
 
 // Helper to get JWT token

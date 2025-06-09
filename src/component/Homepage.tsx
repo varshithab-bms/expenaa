@@ -97,7 +97,7 @@ const Homepage: React.FC<{ onContinue: () => void }> = ({ onContinue }) => {
         {/* Header with icon */}
         <h1
           style={{
-            fontSize: "3rem",
+            fontSize: "2rem",
             color: "#6c63ff",
             fontWeight: "900",
             marginBottom: "1rem",
