@@ -1,4 +1,4 @@
-const API_BASE = "http://192.168.43.111:5000/api/auth";
+const API_BASE = "https://expenza-backend-9l3h.onrender.com/api/auth";
 const TOKEN_KEY = "auth_token";
 
 // Save token
