@@ -22,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "backend/server.js"]
+  "include": ["src", "backend/server.js", "firebaseConfig.js"]
 }
