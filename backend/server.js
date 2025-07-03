@@ -12,7 +12,7 @@ async function startServer() {
     });
     console.log('✅ MongoDB connected');
 app.listen(PORT, () => {
-  console.log(`Server listening on port http://192.168.43.111:5173`);
+  console.log(`🚀 Server running at https://expenza-backend-9l3h.onrender.com`);
 });
 
   } catch (err) {
