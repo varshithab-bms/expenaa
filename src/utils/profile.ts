@@ -1,6 +1,7 @@
 import { Profile } from "../types";
 
-const API_BASE = "https://expenza-backend-9l3h.onrender.com/api/profiles/me"; 
+const API_BASE = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/profiles/me`;
+
 const TOKEN_KEY = "auth_token";
 
 // Helper to get JWT token
