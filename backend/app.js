@@ -30,6 +30,7 @@ const corsOptions = {
     'http://localhost:5173',
     'http://192.168.43.111:5173',
     'https://expenza-omega.vercel.app',
+     'https://expenaa.vercel.app',
     'https://expenza-git-main-varshitha-bs-projects.vercel.app',
     'https://expenza-o43mucqug-varshitha-bs-projects.vercel.app'
   ],
