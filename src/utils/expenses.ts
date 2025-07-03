@@ -1,5 +1,5 @@
 import { Expense, NewExpense } from "../types";
-const API_BASE = "https://expenza-backend-9l3h.onrender.com/api/expenses";
+const API_BASE = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/expenses`;
 
 async function parseJSONSafe(res: Response) {
   const text = await res.text();
